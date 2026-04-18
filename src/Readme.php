@@ -6,8 +6,11 @@ namespace StarInterop\Stardoc;
 use Composer\Autoload\ClassLoader;
 use ReflectionClass;
 use ReflectionClassConstant;
+use ReflectionIntersectionType;
 use ReflectionMethod;
 use ReflectionProperty;
+use ReflectionType;
+use ReflectionUnionType;
 
 class Readme
 {
@@ -271,13 +274,66 @@ class Readme
 
     protected function stripNamespace($namespace, $type) : string
     {
-        $namespace = str_replace(
-            $namespace . "\\",
-            "",
-            (string) $type
-        );
+        $typeString = $type instanceof ReflectionType
+            ? $this->formatReflectionType($type)
+            : (string) $type;
 
-        return $namespace;
+        return str_replace($namespace . "\\", "", $typeString);
+    }
+
+    protected function formatReflectionType(
+        ReflectionType $type,
+        bool $insideUnion = false,
+    ) : string {
+        if ($type instanceof ReflectionUnionType) {
+            $parts = array_map(
+                fn (ReflectionType $t) : string
+                    => $this->formatReflectionType($t, true),
+                $type->getTypes(),
+            );
+            $indexed = [];
+
+            foreach ($parts as $i => $part) {
+                $indexed[] = [$part, $i];
+            }
+
+            usort(
+                $indexed,
+                fn (array $a, array $b) : int
+                    => $this->typePriority($a[0]) <=> $this->typePriority($b[0])
+                        ?: $a[1] <=> $b[1],
+            );
+            return implode('|', array_column($indexed, 0));
+        }
+
+        if ($type instanceof ReflectionIntersectionType) {
+            $parts = array_map(
+                fn (ReflectionType $t) : string => (string) $t,
+                $type->getTypes(),
+            );
+            $out = implode('&', $parts);
+            return $insideUnion ? "({$out})" : $out;
+        }
+
+        return (string) $type;
+    }
+
+    protected function typePriority(string $type) : int
+    {
+        /** @var list<string> $order */
+        static $order = [
+            'null',
+            'bool',
+            'true',
+            'false',
+            'int',
+            'float',
+            'string',
+            'array',
+            'object',
+        ];
+        $index = array_search(strtolower($type), $order, true);
+        return $index === false ? PHP_INT_MAX : (int) $index;
     }
 
     protected function wrapSignature(string $signature) : string
