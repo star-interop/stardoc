@@ -5,9 +5,9 @@ namespace StarInterop\Stardoc\Fixture;
 
 interface TypeOrderInterface
 {
-    public const string|int|null MIXED_CONST = null;
+    public const null|int|string MIXED_CONST = null;
 
-    public string|int|null $unionProp { get; }
+    public null|int|string $unionProp { get; }
 
     public ?Thing $nullableProp { get; }
 
@@ -16,12 +16,15 @@ interface TypeOrderInterface
      *
      * @var string|int|null
      */
-    public string|int|null $annotatedProp { get; }
+    public null|int|string $annotatedProp { get; }
 
     /**
      * @param array<int, mixed>|string $b
      */
-    public function unionArgs(Thing|bool|null $a, array|string $b) : int|string|null;
+    public function unionArgs(
+        null|bool|Thing $a,
+        string|array $b,
+    ) : null|int|string;
 
     public function intersection(Thing&Other $c) : Thing&Other;
 }

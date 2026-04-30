@@ -32,10 +32,12 @@ class ReadmeTest extends TestCase
             'public const null|int|string MIXED_CONST',
             $output,
         );
+
         $this->assertStringContainsString(
             'public null|int|string $unionProp',
             $output,
         );
+
         $this->assertStringContainsString('null|bool|Thing $a', $output);
         $this->assertStringContainsString('string|array $b', $output);
         $this->assertStringContainsString(') : null|int|string;', $output);
@@ -57,6 +59,7 @@ class ReadmeTest extends TestCase
     public function testDocblockAnnotationPreservesAuthorOrder() : void
     {
         $output = $this->render();
+
         $this->assertStringContainsString(
             'public string|int|null $annotatedProp',
             $output,

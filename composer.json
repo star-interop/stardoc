@@ -25,7 +25,8 @@
         "pds/composer-script-names": "^1.0",
         "pds/skeleton": "^1.0",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^11.0",
+        "pmjones/php-styler": "0.x@dev"
     },
     "autoload-dev": {
         "psr-4" : {
@@ -37,8 +38,9 @@
     ],
     "scripts": {
         "analyze": "./vendor/bin/phpstan",
-        "check": "composer test && composer analyze && composer cs-check",
+        "check": "composer test && composer analyze && composer cs-clear && composer cs-check",
         "cs-check": "./vendor/bin/php-styler check",
+        "cs-clear": "./vendor/bin/php-styler clear-cache",
         "cs-fix": "./vendor/bin/php-styler apply",
         "test": "./vendor/bin/phpunit",
         "test-coverage": "./vendor/bin/phpunit --coverage-html=./tmp/coverage"
