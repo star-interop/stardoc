@@ -260,16 +260,35 @@ class Readme
                 $signature .= "{$type} \${$name}"; // @TODO ADD DEFAULT VALUES IF PRESENT
 
                 if ($parameter->isOptional()) {
-                    $default = var_export($parameter->getDefaultValue(), true);
+                    if ($parameter->isDefaultValueConstant()) {
+                        $default = (string) $parameter->getDefaultValueConstantName();
 
-                    if ($default === 'NULL') {
-                        $default = strtolower($default);
-                    }
+                        if (
+                            ! str_contains($default, '::')
+                            && str_contains($default, '\\')
+                            && ! defined($default)
+                        ) {
+                            $short = substr(
+                                $default,
+                                (int) strrpos($default, '\\') + 1,
+                            );
 
-                    $emptyArray = var_export([], true);
+                            if (defined($short)) {
+                                $default = $short;
+                            }
+                        }
+                    } else {
+                        $default = var_export($parameter->getDefaultValue(), true);
 
-                    if ($default === $emptyArray) {
-                        $default = '[]';
+                        if ($default === 'NULL') {
+                            $default = strtolower($default);
+                        }
+
+                        $emptyArray = var_export([], true);
+
+                        if ($default === $emptyArray) {
+                            $default = '[]';
+                        }
                     }
 
                     $signature .= " = {$default}";

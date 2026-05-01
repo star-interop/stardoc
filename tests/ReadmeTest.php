@@ -65,4 +65,14 @@ class ReadmeTest extends TestCase
             $output,
         );
     }
+
+    public function testConstantDefaultsRenderAsConstantNames() : void
+    {
+        $output = $this->render();
+        $this->assertStringContainsString('$whence = SEEK_SET', $output);
+        $this->assertStringContainsString(
+            '$value = self::MIXED_CONST',
+            $output,
+        );
+    }
 }

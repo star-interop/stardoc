@@ -27,4 +27,16 @@ interface TypeOrderInterface
     ) : null|int|string;
 
     public function intersection(Thing&Other $c) : Thing&Other;
+
+    /**
+     * @param SEEK_CUR|SEEK_SET|SEEK_END $whence
+     */
+    public function withGlobalConstDefault(
+        int $offset,
+        int $whence = SEEK_SET,
+    ) : void;
+
+    public function withClassConstDefault(
+        null|int|string $value = self::MIXED_CONST,
+    ) : void;
 }
