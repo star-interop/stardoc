@@ -257,7 +257,8 @@ class Readme
                     $matches[1] ?? $parameter->getType(),
                 );
 
-                $signature .= "{$type} \${$name}"; // @TODO ADD DEFAULT VALUES IF PRESENT
+                $ref = $parameter->isPassedByReference() ? '&' : '';
+                $signature .= "{$type} {$ref}\${$name}";
 
                 if ($parameter->isOptional()) {
                     if ($parameter->isDefaultValueConstant()) {

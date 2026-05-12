@@ -39,4 +39,17 @@ interface TypeOrderInterface
     public function withClassConstDefault(
         null|int|string $value = self::MIXED_CONST,
     ) : void;
+
+    public function byRef(int &$x) : void;
+
+    /**
+     * @param array<int, mixed> $items
+     */
+    public function withLiteralDefaults(
+        int $n = 5,
+        string $s = 'foo',
+        bool $b = true,
+        ?Thing $t = null,
+        array $items = [],
+    ) : void;
 }

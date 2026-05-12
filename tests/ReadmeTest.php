@@ -75,4 +75,20 @@ class ReadmeTest extends TestCase
             $output,
         );
     }
+
+    public function testPassByReferenceParamRendersAmpersand() : void
+    {
+        $output = $this->render();
+        $this->assertStringContainsString('byRef(int &$x)', $output);
+    }
+
+    public function testLiteralDefaultsRender() : void
+    {
+        $output = $this->render();
+        $this->assertStringContainsString('$n = 5', $output);
+        $this->assertStringContainsString("\$s = 'foo'", $output);
+        $this->assertStringContainsString('$b = true', $output);
+        $this->assertStringContainsString('$t = null', $output);
+        $this->assertStringContainsString('$items = []', $output);
+    }
 }
